@@ -1,6 +1,6 @@
 // see SignupForm.js for comments
 import React, { useState } from 'react';
-import { useMutation } from '@apollo/client'
+import { useMutation } from '@apollo/react-hooks'
 import { Form, Button, Alert } from 'react-bootstrap';
 
 // import { loginUser } from '../utils/API';
@@ -11,7 +11,7 @@ const LoginForm = () => {
   const [userFormData, setUserFormData] = useState({ email: '', password: '' });
   const [validated] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-  const [loginUser] = useMutation(LOGIN_USER)
+  const [loginUser, {error}] = useMutation(LOGIN_USER)
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;

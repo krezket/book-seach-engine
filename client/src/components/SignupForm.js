@@ -3,6 +3,7 @@ import { Form, Button, Alert } from 'react-bootstrap'
 import { useMutation } from '@apollo/react-hooks'
  
 import { ADD_USER } from '../utils/mutations'
+import Auth from '../utils/auth'
 // import { createUser } from '../utils/API';
  
 const SignupForm = () => {
@@ -13,47 +14,40 @@ const SignupForm = () => {
   // set state for alert
   const [showAlert, setShowAlert] = useState(false);
 
-  // const [addUser] = useMutation(ADD_USER)
-
+  const [addUser, { error, data }] = useMutation(ADD_USER);
+  
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setValues({ ...values, [name]: value });
   };
-
-  const [addUser, { loading }] = useMutation(ADD_USER, {
-    update(proxy, result){
-      console.log(result)
-    },
-    variables: values
-  })
-
+  
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    addUser()
+    console.log(values)
+  // check if form has everything (as per react-bootstrap docs)
 
-    // check if form has everything (as per react-bootstrap docs)
-    // const form = event.currentTarget;
-    // if (form.checkValidity() === false) {
-    //   event.preventDefault();
-    //   event.stopPropagation();
-    // }
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
 
-    // try {
-    //   const {data} = await addUser({variables: {...values}});
+    try {
+      const {data} = await addUser({variables: {...values}});
 
-    //   console.log(data);
-    //   Auth.login(data.addUser.token);
-    // } 
-    // catch (err) {
-    //   console.error(err);
-    //   setShowAlert(true);
-    // }
+      Auth.login(data.addUser.token);
+    } 
 
-    // setValues({
-    //   username: '',
-    //   email: '',
-    //   password: '',
-    // });
+    catch (err) {
+      console.error(err);
+      setShowAlert(true);
+    }
+
+    setValues({
+      username: '',
+      email: '',
+      password: '',
+    });
   };
 
   return (
